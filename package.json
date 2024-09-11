@@ -6,6 +6,7 @@
   "repository": "https://github.com/jasonprado/bsky-image-bot",
   "author": "Jason Prado <jason.prado@gmail.com>",
   "license": "MIT",
+  "type": "module",
   "dependencies": {
     "@atproto/api": "^0.3.12",
     "dotenv": "^16.3.1",
