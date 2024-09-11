@@ -15,7 +15,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "start": "ts-node src/index.ts",
-    "post-next-image": "ts-node src/index.ts"  // Adicione esta linha
+    "post-next-image": "ts-node src/index.ts"
   },
   "devDependencies": {
     "@types/node": "^20.3.1",
