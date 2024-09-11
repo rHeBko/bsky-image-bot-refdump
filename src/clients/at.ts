@@ -1,3 +1,10 @@
+import fetch from 'node-fetch';
+const res = await fetch(reqUri, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(body),
+});
+
 import { BskyAgent, stringifyLex, jsonToLex } from '@atproto/api';
 import * as fs from 'fs';
 import * as util from 'util';
