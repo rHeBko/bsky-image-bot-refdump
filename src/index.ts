@@ -1,20 +1,31 @@
 import { postImage } from './clients/at';
 import { getNextImage } from './images';
 import * as dotenv from 'dotenv';
+
+// Carregar variáveis de ambiente
 dotenv.config();
 
-// Function to get the next image without additional text
+// Função principal para obter a próxima imagem e postá-la
 async function main() {
+  // Obtendo o nome da última imagem a partir das variáveis de ambiente
   const { LAST_IMAGE_NAME: lastImageName } = process.env;
+
+  // Obtendo a próxima imagem com base no nome da última imagem
   const nextImage = await getNextImage({ lastImageName });
 
+  // Log do nome da próxima imagem
   console.log(nextImage.imageName);
 
+  // Postando a próxima imagem
   await postImage({
     path: nextImage.absolutePath,
-    text: '', // No text for the image post
-    altText: '', // No alt text for the image post
+    text: '', // Nenhum texto para o post da imagem
+    altText: '', // Nenhum texto alternativo para o post da imagem
   });
 }
 
-main();
+// Executar a função principal
+main().catch(error => {
+  console.error('Erro ao executar o script:', error);
+  process.exit(1); // Sair com um código de erro
+});
