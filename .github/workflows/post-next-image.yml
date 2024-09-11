@@ -1,39 +1,32 @@
-name: 'bsky-image-bot Post Next Image'
+name: Post Image to Bluesky
+
 on:
-  # Comment out workflow_dispatch and uncomment the schedule to run daily
-  workflow_dispatch:
-  # schedule:
-  #  - cron: "30 5 * * *"
+  schedule:
+    - cron: '0 10 * * 1'  # Executa toda segunda-feira às 7am BRT (UTC-3), ajustado para UTC
+  workflow_dispatch:  # Permite a execução manual do workflow
 
 jobs:
-  # On some job, do some stuff and persist variables meant to be re-used in other jobs
-  post-next-image:
-    name: Post Next Image
+  post-image:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Use Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'  # Ou a versão que seu projeto requer
 
-      - name: Install Yarn
-        run: npm install -g yarn
+    - name: Install dependencies
+      run: npm install  # Instala as dependências do projeto
 
-      - name: Install dependencies
-        run: yarn install
-
-      - name: Do the post
-        env:
-          BSKY_IDENTIFIER: ${{ secrets.BSKY_IDENTIFIER }}
-          BSKY_PASSWORD: ${{ secrets.BSKY_PASSWORD }}
-          LAST_IMAGE_NAME: ${{ vars.LAST_IMAGE_NAME }}
-        run: |
-          echo "Previous image name: $LAST_IMAGE_NAME"
-          echo "Authenticating with user identifier: $BSKY_IDENTIFIER"
-          NEW_LAST_IMAGE_NAME=$(yarn --silent run start)
-          echo "NEW_LAST_IMAGE_NAME=$NEW_LAST_IMAGE_NAME" >> $GITHUB_ENV
+    - name: Run index.ts
+      run: npm run post-next-image  # Executa o script que você configurou
+      env:
+        BSKY_IDENTIFIER: ${{ secrets.BSKY_IDENTIFIER }}  # Seu identificador da Bluesky
+        BSKY_PASSWORD: ${{ secrets.BSKY_PASSWORD }}  # Sua senha da Bluesky
+        REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}  # Token de acesso ao repositório
 
       - uses: action-pack/set-variable@v1
         with:
