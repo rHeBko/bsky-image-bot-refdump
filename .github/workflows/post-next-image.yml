@@ -1,4 +1,4 @@
-name: Post Image to Bluesky
+name: post-next-image
 
 on:
   schedule:
