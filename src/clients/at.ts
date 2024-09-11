@@ -22,9 +22,14 @@ async function loadImageData(path: fs.PathLike) {
 async function resizeImage(buffer: Buffer): Promise<Buffer> {
   let newSize = 0.9;
   let outputBuffer = buffer;
-  const image = sharp(buffer); // Criando uma instância da classe sharp
+  const image = sharp(buffer);
 
   const metadata = await image.metadata();
+
+  // Verifica se metadata.width está definido
+  if (metadata.width === undefined) {
+    throw new Error('Unable to get image width from metadata');
+  }
 
   while (outputBuffer.byteLength > 976.56 * 1024) {
     const newWidth = Math.round(metadata.width * newSize);
