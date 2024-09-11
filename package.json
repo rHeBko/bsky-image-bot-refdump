@@ -6,7 +6,7 @@
   "repository": "https://github.com/jasonprado/bsky-image-bot",
   "author": "Jason Prado <jason.prado@gmail.com>",
   "license": "MIT",
-  "type": "module", // Adiciona esta linha para usar módulos ES
+  "type": "module",
   "dependencies": {
     "@atproto/api": "^0.3.12",
     "dotenv": "^16.3.1",
@@ -33,7 +33,7 @@
     "build": "tsc",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "start": "node --loader ts-node/esm src/index.ts", // Atualize para usar o loader ts-node/esm
-    "post-next-image": "node --loader ts-node/esm src/index.ts" // Atualize para usar o loader ts-node/esm
+    "start": "node --loader ts-node/esm src/index.ts",
+    "post-next-image": "node --loader ts-node/esm src/index.ts"
   }
 }
