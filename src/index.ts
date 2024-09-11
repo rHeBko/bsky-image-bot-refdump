@@ -1,5 +1,5 @@
-import { postImage } from './clients/at';
-import { getNextImage } from './images';
+import { postImage } from './clients/at.js'; // Adicione a extensão .js para módulos ES
+import { getNextImage } from './images.js'; // Adicione a extensão .js para módulos ES
 import * as dotenv from 'dotenv';
 
 // Carregar variáveis de ambiente
