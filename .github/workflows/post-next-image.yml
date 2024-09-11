@@ -27,9 +27,3 @@ jobs:
         BSKY_IDENTIFIER: ${{ secrets.BSKY_IDENTIFIER }}  # Seu identificador da Bluesky
         BSKY_PASSWORD: ${{ secrets.BSKY_PASSWORD }}  # Sua senha da Bluesky
         REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}  # Token de acesso ao repositório
-
-      - uses: action-pack/set-variable@v1
-        with:
-          name: 'LAST_IMAGE_NAME'
-          value: ${{ env.NEW_LAST_IMAGE_NAME }}
-          token: ${{ secrets.REPO_ACCESS_TOKEN }}
