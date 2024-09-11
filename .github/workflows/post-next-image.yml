@@ -2,8 +2,8 @@ name: post-next-image
 
 on:
   schedule:
-    - cron: '0 10 * * 1'  # Executa toda segunda-feira às 7am BRT (UTC-3), ajustado para UTC
-  workflow_dispatch:  # Permite a execução manual do workflow
+    - cron: '0 10 * * 1'  # Executes every Monday at 7am BRT (UTC-3), adjusted to UTC
+  workflow_dispatch:  # Allows manual execution of the workflow
 
 jobs:
   post-image:
@@ -16,14 +16,18 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '16'  # Ou a versão que seu projeto requer
+        node-version: '16'  # Or the version your project requires
 
     - name: Install dependencies
-      run: npm install  # Instala as dependências do projeto
+      run: npm install  # Install project dependencies
+
+    - name: Build TypeScript
+      run: npm run build  # Compile TypeScript to JavaScript
+      # Optional: You may want to add a build step if not already present
 
     - name: Run index.ts
-      run: npm run post-next-image  # Executa o script que você configurou
+      run: npm run post-next-image  # Execute the script
       env:
-        BSKY_IDENTIFIER: ${{ secrets.BSKY_IDENTIFIER }}  # Seu identificador da Bluesky
-        BSKY_PASSWORD: ${{ secrets.BSKY_PASSWORD }}  # Sua senha da Bluesky
-        REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}  # Token de acesso ao repositório
+        BSKY_IDENTIFIER: ${{ secrets.BSKY_IDENTIFIER }}  # Your Bluesky identifier
+        BSKY_PASSWORD: ${{ secrets.BSKY_PASSWORD }}  # Your Bluesky password
+        REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}  # Repository access token
