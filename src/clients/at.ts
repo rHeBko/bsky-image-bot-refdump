@@ -1,10 +1,4 @@
 import fetch from 'node-fetch';
-const res = await fetch(reqUri, {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify(body),
-});
-
 import { BskyAgent, stringifyLex, jsonToLex } from '@atproto/api';
 import * as fs from 'fs';
 import * as util from 'util';
@@ -16,15 +10,12 @@ const POST_TIMEOUT = 60e3; // 60s
 const readFile = util.promisify(fs.readFile);
 
 async function loadImageData(path: fs.PathLike) {
-  // Read the file from the provided path
   let buffer = await readFile(path);
 
-  // Check file size, 1MB = 1024*1024 bytes
   if (buffer.byteLength > 1024 * 1024) {
     buffer = await resizeImage(buffer);
   }
 
-  // Convert the buffer to a Uint8Array and return it
   return { data: new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength) };
 }
 
@@ -35,17 +26,16 @@ async function resizeImage(buffer: Buffer): Promise<Buffer> {
 
   const metadata = await image.metadata();
 
-  // We'll try to reduce the image size by 10% in each iteration until the image is under 1MB
   while (outputBuffer.byteLength > 976.56 * 1024) {
     const newWidth = Math.round(metadata.width * newSize);
 
     outputBuffer = await image
-      .rotate() // Correct image rotation based on EXIF data
+      .rotate()
       .resize(newWidth)
       .jpeg()
       .toBuffer();
 
-    newSize -= 0.1; // Decrease the target size by 10%
+    newSize -= 0.1;
   }
 
   return outputBuffer;
@@ -61,17 +51,15 @@ async function fetchHandler(
   reqUri: string,
   reqMethod: string,
   reqHeaders: Record<string, string>,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  reqBody: any,
+  reqBody: any
 ): Promise<FetchHandlerResponse> {
   const reqMimeType = reqHeaders['Content-Type'] || reqHeaders['content-type'];
   if (reqMimeType && reqMimeType.startsWith('application/json')) {
     reqBody = stringifyLex(reqBody);
-  } else if (typeof reqBody === 'string' && (reqBody.startsWith('/') || reqBody.startsWith('file:'))) {
   }
 
   const controller = new AbortController();
-  const to = setTimeout(() => controller.abort(), reqMethod === 'post' ? POST_TIMEOUT : GET_TIMEOUT);
+  const to = setTimeout(() => controller.abort(), reqMethod === 'POST' ? POST_TIMEOUT : GET_TIMEOUT);
 
   const res = await fetch(reqUri, {
     method: reqMethod,
@@ -111,15 +99,18 @@ type PostImageOptions = {
   text: string;
   altText: string;
 };
+
 async function postImage({ path, text, altText }: PostImageOptions) {
   const agent = new BskyAgent({ service: 'https://bsky.social' });
   BskyAgent.configure({
-    fetch: fetchHandler,
+    fetch: fetchHandler, // Configura o fetchHandler
   });
+
   await agent.login({
     identifier: process.env.BSKY_IDENTIFIER || 'BSKY_IDENTIFIER missing',
     password: process.env.BSKY_PASSWORD || 'BSKY_PASSWORD missing',
   });
+
   const { data } = await loadImageData(path);
 
   const testUpload = await agent.uploadBlob(data, { encoding: 'image/jpg' });
