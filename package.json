@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "description": "Bot to automatically publish a directory of images on Bluesky",
   "main": "index.js",
-  "type": "module",
   "repository": "https://github.com/jasonprado/bsky-image-bot",
   "author": "Jason Prado <jason.prado@gmail.com>",
   "license": "MIT",
