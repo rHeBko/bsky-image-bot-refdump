@@ -2,7 +2,7 @@ import fetch from 'node-fetch';
 import { BskyAgent, stringifyLex, jsonToLex } from '@atproto/api';
 import * as fs from 'fs';
 import * as util from 'util';
-import * as sharp from 'sharp';
+import sharp from 'sharp'; // Importação corrigida
 
 const GET_TIMEOUT = 15e3; // 15s
 const POST_TIMEOUT = 60e3; // 60s
@@ -20,9 +20,9 @@ async function loadImageData(path: fs.PathLike) {
 }
 
 async function resizeImage(buffer: Buffer): Promise<Buffer> {
-  let newSize = 0.9; // Start with 90% of original size
+  let newSize = 0.9;
   let outputBuffer = buffer;
-  const image = sharp(buffer);
+  const image = sharp(buffer); // Criando uma instância da classe sharp
 
   const metadata = await image.metadata();
 
@@ -74,14 +74,15 @@ async function fetchHandler(
     resHeaders[key] = value;
   });
   const resMimeType = resHeaders['Content-Type'] || resHeaders['content-type'];
-  let resBody;
+  let resBody: ArrayBuffer | undefined;
   if (resMimeType) {
     if (resMimeType.startsWith('application/json')) {
-      resBody = jsonToLex(await res.json());
+      resBody = jsonToLex(await res.json()) as ArrayBuffer;
     } else if (resMimeType.startsWith('text/')) {
-      resBody = await res.text();
+      resBody = new TextEncoder().encode(await res.text()).buffer; // Convert text to ArrayBuffer
     } else {
-      resBody = await res.blob();
+      const blob = await res.blob();
+      resBody = await blob.arrayBuffer(); // Convert blob to ArrayBuffer
     }
   }
 
@@ -103,7 +104,7 @@ type PostImageOptions = {
 async function postImage({ path, text, altText }: PostImageOptions) {
   const agent = new BskyAgent({ service: 'https://bsky.social' });
   BskyAgent.configure({
-    fetch: fetchHandler, // Configura o fetchHandler
+    fetch: fetchHandler,
   });
 
   await agent.login({
